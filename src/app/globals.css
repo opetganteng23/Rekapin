@@ -33,6 +33,8 @@
   --animate-fade-up: fade-up 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   --animate-pop: pop 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both;
   --animate-grow: grow 2.8s ease-out infinite;
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-kenburns: kenburns 9s ease-out both;
   --radius-input: 8px;
 }
 
@@ -52,6 +54,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }
@@ -76,6 +79,14 @@ html {
 @keyframes pop {
   from { opacity: 0; transform: scale(0.7); }
   to { opacity: 1; transform: scale(1); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes kenburns {
+  from { transform: scale(1.02); }
+  to { transform: scale(1.12); }
 }
 @keyframes grow {
   from { width: 8%; }

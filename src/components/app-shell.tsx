@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { requireUser } from "@/lib/session";
+import { LogoMark } from "./logo";
 import { SignOutButton } from "./sign-out-button";
 
 const roleLabel = { employee: "Karyawan", approver: "Approver", admin: "Admin" } as const;
@@ -24,7 +25,7 @@ export async function AppShell({ children }: { children: ReactNode }) {
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-8">
           <div className="flex items-center gap-6">
             <Link href={home} className="flex items-center gap-2.5">
-              <span className="flex size-8 items-center justify-center rounded-input bg-primary text-sm font-semibold text-white">R</span>
+              <LogoMark size={34} />
               <span className="text-lg font-semibold">Rekapin</span>
             </Link>
             <nav className="hidden gap-1 md:flex" aria-label="Navigasi utama">

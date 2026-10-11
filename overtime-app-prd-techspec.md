@@ -231,6 +231,9 @@ Proses pengajuan lembur saat ini dilakukan secara manual: karyawan harus menging
 | Batas upload | 4 MB per file (bukan 10 MB), karena body Vercel Function dibatasi 4,5 MB. Foto dikompres di browser. Perlu client upload langsung ke Blob jika butuh lebih besar |
 | Cron rekap | Vercel Cron berjalan **harian** 06:00 WIB (`0 23 * * *` UTC, kompatibel plan Hobby); endpoint hanya eksekusi bila hari ini cocok dengan jadwal di Settings. Field `recapHour` hanya informasi jadwal; jam eksekusi aktual mengikuti `vercel.json` |
 | Siapa yang approve | Hanya role `approver` (admin tidak), dan tidak boleh memutuskan pengajuan sendiri |
+| Landing page & CMS | Landing page di `/` sepenuhnya dikelola admin lewat Pengaturan → Landing Page (teks, fitur, langkah, peran, CTA, footer, running text, slide hero). Disimpan di koleksi `siteContent` (singleton) dan di-cache dengan tag `site-content`; simpan = langsung ter-invalidasi |
+| Gambar slide | Dikompres di browser (maks 1600px, ≤700 KB), dikirim sebagai base64, disimpan di koleksi `siteImages`, disajikan lewat `/api/site/image/:id` (di-decode ke biner, cache immutable). Maks 8 slide. Hanya JPG/PNG/WebP (SVG ditolak); tanda tangan file diverifikasi di server |
+| Logo & favicon | Logo AILO. Ikon (dipotong dari logo, tanpa wordmark) untuk favicon/navbar/auth/marquee; logo penuh untuk footer |
 | Hapus akses user | Soft-deactivate (`isActive`), bukan hard delete — riwayat lembur tetap terjaga |
 | Undang pengguna | Admin input nama/email/role → email link set-password; registrasi mandiri tetap ada dan selalu `employee` |
 | Lupa password | Reset via email, token sekali pakai 1 jam |

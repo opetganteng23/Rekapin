@@ -9,12 +9,17 @@ const secondary =
 const navPrimary =
   "inline-flex h-10 items-center rounded-input bg-primary px-5 text-sm font-medium text-white hover:bg-primary-hover";
 
-function Guest({ size }: { size: "nav" | "hero" }) {
+interface Labels {
+  primary: string;
+  secondary: string;
+}
+
+function Guest({ size, labels }: { size: "nav" | "hero"; labels: Labels }) {
   if (size === "nav") {
     return (
       <>
         <Link href="/login" className="hidden h-10 items-center rounded-input px-4 text-sm font-medium text-muted hover:text-text sm:inline-flex">
-          Masuk
+          {labels.secondary}
         </Link>
         <Link href="/register" className={navPrimary}>Daftar</Link>
       </>
@@ -22,28 +27,28 @@ function Guest({ size }: { size: "nav" | "hero" }) {
   }
   return (
     <>
-      <Link href="/register" className={primary}>Mulai Sekarang</Link>
-      <Link href="/login" className={secondary}>Masuk</Link>
+      <Link href="/register" className={primary}>{labels.primary}</Link>
+      <Link href="/login" className={secondary}>{labels.secondary}</Link>
     </>
   );
 }
 
-async function Buttons({ size }: { size: "nav" | "hero" }) {
+async function Buttons({ size, labels }: { size: "nav" | "hero"; labels: Labels }) {
   const session = await auth();
-  if (!session?.user) return <Guest size={size} />;
-  const home = session.user.role === "admin" ? "/users" : "/dashboard";
+  if (!session?.user) return <Guest size={size} labels={labels} />;
+  const isAdmin = session.user.role === "admin";
   return (
-    <Link href={home} className={size === "nav" ? navPrimary : primary}>
-      {session.user.role === "admin" ? "Buka Panel Admin" : "Buka Dashboard"}
+    <Link href={isAdmin ? "/users" : "/dashboard"} className={size === "nav" ? navPrimary : primary}>
+      {isAdmin ? "Buka Panel Admin" : "Buka Dashboard"}
     </Link>
   );
 }
 
 /** CTA yang menyesuaikan status login. Sesi dibaca di dalam Suspense; fallback = tampilan tamu (tanpa layout shift). */
-export function LandingCta({ size }: { size: "nav" | "hero" }) {
+export function LandingCta({ size, labels }: { size: "nav" | "hero"; labels: Labels }) {
   return (
-    <Suspense fallback={<Guest size={size} />}>
-      <Buttons size={size} />
+    <Suspense fallback={<Guest size={size} labels={labels} />}>
+      <Buttons size={size} labels={labels} />
     </Suspense>
   );
 }
