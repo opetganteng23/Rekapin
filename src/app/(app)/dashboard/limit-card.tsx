@@ -3,9 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Alert, Button, Card, Field } from "@/components/ui";
+import { useToast } from "@/components/toast";
 
 export function LimitCard({ hours, limit }: { hours: number; limit: number | null }) {
   const router = useRouter();
+  const toast = useToast();
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,6 +32,7 @@ export function LimitCard({ hours, limit }: { hours: number; limit: number | nul
     setLoading(false);
     if (!res.ok) return setError((await res.json().catch(() => null))?.error ?? "Gagal menyimpan");
     setEditing(false);
+    toast.success(value === null ? "Limit bulanan dihapus" : `Limit bulanan diatur ke ${value} jam`);
     router.refresh();
   }
 

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Modal } from "@/components/modal";
 import { Alert, Button } from "@/components/ui";
+import { useToast } from "@/components/toast";
 
 export interface PendingRow {
   id: string;
@@ -19,6 +20,7 @@ const isPdf = (u: string) => u.split("?")[0].toLowerCase().endsWith(".pdf");
 
 export function ApprovalsTable({ rows }: { rows: PendingRow[] }) {
   const router = useRouter();
+  const toast = useToast();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [viewing, setViewing] = useState<PendingRow | null>(null);
@@ -38,6 +40,7 @@ export function ApprovalsTable({ rows }: { rows: PendingRow[] }) {
       setError((await res.json().catch(() => null))?.error ?? "Gagal memproses pengajuan");
       return false;
     }
+    toast.success(action === "approve" ? "Pengajuan disetujui" : "Pengajuan ditolak", action === "approve" ? "Status karyawan diperbarui." : "Alasan penolakan sudah dikirim ke karyawan.");
     router.refresh();
     return true;
   }
@@ -118,7 +121,7 @@ export function ApprovalsTable({ rows }: { rows: PendingRow[] }) {
       </ul>
 
       {viewing && (
-        <Modal title={`Bukti — ${viewing.name}`} onClose={() => setViewing(null)} wide>
+        <Modal title={`Bukti: ${viewing.name}`} onClose={() => setViewing(null)} wide>
           <p className="mb-3 text-sm text-muted">{viewing.date} · {viewing.time} · {viewing.duration}</p>
           <div className="flex flex-col gap-3">
             {viewing.evidence.map((u, i) =>

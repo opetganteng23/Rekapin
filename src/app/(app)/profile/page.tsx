@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { requireUser } from "@/lib/session";
 import { ProfileForms } from "./profile-forms";
 
-export const metadata: Metadata = { title: "Profil — Rekapin" };
+export const metadata: Metadata = { title: "Profil | Rekapin" };
 
 export default async function ProfilePage() {
   const user = await requireUser();

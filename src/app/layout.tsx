@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { Suspense } from "react";
 import { RouteProgress } from "@/components/route-progress";
+import { ToastProvider } from "@/components/toast";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -23,7 +24,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Suspense fallback={null}>
           <RouteProgress />
         </Suspense>
-        {children}
+        <ToastProvider>{children}</ToastProvider>
       </body>
     </html>
   );

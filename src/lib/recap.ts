@@ -132,7 +132,7 @@ export async function buildReportWorkbook(
   const sum = wb.addWorksheet("Ringkasan per Karyawan");
   sum.columns = [{ width: 5 }, { width: 28 }, { width: 18 }, { width: 14 }];
   sum.mergeCells("A1:D1");
-  sum.getCell("A1").value = `${meta.title} — ${meta.periodLabel}`;
+  sum.getCell("A1").value = `${meta.title} | ${meta.periodLabel}`;
   sum.getCell("A1").font = { bold: true, size: 13 };
   const sh = sum.getRow(3);
   sh.values = ["No", "Nama", "Jumlah Pengajuan", "Total Jam"];

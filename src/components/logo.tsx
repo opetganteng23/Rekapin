@@ -17,7 +17,7 @@ export function LogoMark({ size = 36, className = "" }: { size?: number; classNa
 
 export function Brand({ name = "Rekapin", href = "/", size = 36 }: { name?: string; href?: string; size?: number }) {
   return (
-    <Link href={href} className="flex items-center gap-2.5" aria-label={`${name} — beranda`}>
+    <Link href={href} className="flex items-center gap-2.5" aria-label={`${name}, beranda`}>
       <LogoMark size={size} />
       <span className="text-lg font-semibold tracking-tight">{name}</span>
     </Link>

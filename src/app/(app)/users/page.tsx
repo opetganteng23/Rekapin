@@ -3,7 +3,7 @@ import { users } from "@/lib/db";
 import { requireUser } from "@/lib/session";
 import { UsersManager, type UserRow } from "./users-manager";
 
-export const metadata: Metadata = { title: "Pengguna — Rekapin" };
+export const metadata: Metadata = { title: "Pengguna | Rekapin" };
 
 const joinedFmt = new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Jakarta" });
 

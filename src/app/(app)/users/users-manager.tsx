@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Modal } from "@/components/modal";
 import { Alert, Button, Field, cx } from "@/components/ui";
+import { useToast } from "@/components/toast";
 
 export interface UserRow {
   id: string;
@@ -23,10 +24,10 @@ type Dialog =
 
 export function UsersManager({ rows, meId }: { rows: UserRow[]; meId: string }) {
   const router = useRouter();
+  const toast = useToast();
   const [dialog, setDialog] = useState<Dialog>(null);
   const [error, setError] = useState(""); // error tabel
   const [dialogError, setDialogError] = useState("");
-  const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -71,7 +72,7 @@ export function UsersManager({ rows, meId }: { rows: UserRow[]; meId: string }) 
       return null;
     }
     setDialog(null);
-    if (success) setNotice(success);
+    if (success) toast.success(success);
     router.refresh();
     return data;
   }
@@ -81,11 +82,8 @@ export function UsersManager({ rows, meId }: { rows: UserRow[]; meId: string }) 
     const f = new FormData(e.currentTarget);
     const data = await call("invite", "/api/users", "POST", { name: f.get("name"), email: f.get("email"), role: f.get("role") });
     if (data) {
-      setNotice(
-        data.emailed
-          ? "Undangan terkirim lewat email."
-          : "Pengguna dibuat, tetapi email gagal terkirim. Gunakan \"Kirim reset\" setelah SMTP dikonfigurasi.",
-      );
+      if (data.emailed) toast.success("Undangan terkirim", "Pengguna menerima email untuk menetapkan kata sandi.");
+      else toast.info("Pengguna dibuat, email belum terkirim", "Gunakan Kirim reset setelah SMTP dikonfigurasi.");
     }
   }
 
@@ -147,7 +145,6 @@ export function UsersManager({ rows, meId }: { rows: UserRow[]; meId: string }) 
 
         <div className="mt-4 flex flex-col gap-2">
           {error && <Alert tone="error">{error}</Alert>}
-          {notice && <Alert tone="success">{notice}</Alert>}
         </div>
 
         <div className="mt-4 overflow-x-auto">
@@ -182,7 +179,7 @@ export function UsersManager({ rows, meId }: { rows: UserRow[]; meId: string }) 
                         <select
                           value={u.role}
                           disabled={busy === u.id}
-                          onChange={(e) => call(u.id, `/api/users/${u.id}/role`, "PATCH", { role: e.target.value })}
+                          onChange={(e) => call(u.id, `/api/users/${u.id}/role`, "PATCH", { role: e.target.value }, `Peran ${u.name} diubah menjadi ${e.target.value === "approver" ? "Approver" : "Karyawan"}`)}
                           aria-label={`Peran ${u.name}`}
                           className="h-9 rounded-input border border-border bg-surface px-2 text-sm"
                         >

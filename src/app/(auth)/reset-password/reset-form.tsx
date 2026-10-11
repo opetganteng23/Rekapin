@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Alert, Button, Field } from "@/components/ui";
+import { useToast } from "@/components/toast";
 
 export function ResetForm() {
   const token = useSearchParams().get("token") ?? "";
+  const toast = useToast();
   const [done, setDone] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,7 +29,10 @@ export function ResetForm() {
       body: JSON.stringify({ token, password }),
     });
     setLoading(false);
-    if (res.ok) setDone(true);
+    if (res.ok) {
+      toast.success("Kata sandi berhasil diatur");
+      setDone(true);
+    }
     else setError((await res.json().catch(() => null))?.error ?? "Gagal mengatur kata sandi");
   }
 

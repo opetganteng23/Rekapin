@@ -8,7 +8,7 @@ import { NavForm } from "@/components/nav-form";
 import { Card } from "@/components/ui";
 import { ApprovalsTable, type PendingRow } from "./approvals-table";
 
-export const metadata: Metadata = { title: "Persetujuan — Rekapin" };
+export const metadata: Metadata = { title: "Persetujuan | Rekapin" };
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 

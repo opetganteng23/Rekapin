@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Alert, Button, Field } from "@/components/ui";
+import { useToast } from "@/components/toast";
 
 export function RegisterForm() {
   const router = useRouter();
+  const toast = useToast();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -33,6 +35,7 @@ export function RegisterForm() {
       return;
     }
     await signIn("credentials", { email, password, redirect: false });
+    toast.success("Akun berhasil dibuat", "Selamat datang di Rekapin.");
     router.replace("/dashboard");
     router.refresh();
   }

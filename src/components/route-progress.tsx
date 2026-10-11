@@ -29,7 +29,7 @@ export function RouteProgress() {
     clearTimeout(timers.current.hide);
     setVisible(true);
     setProgress(12);
-    // Merayap pelan mendekati 90% — tidak pernah penuh sebelum navigasi benar-benar selesai.
+    // Merayap pelan mendekati 90%, tidak pernah penuh sebelum navigasi benar-benar selesai.
     timers.current.tick = setInterval(() => setProgress((p) => p + (92 - p) * 0.08), 200);
     timers.current.guard = setTimeout(finish, 12_000);
   }

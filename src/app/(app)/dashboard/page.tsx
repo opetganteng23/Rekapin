@@ -11,7 +11,7 @@ import { Card, StatusBadge } from "@/components/ui";
 import { OvertimeForm } from "./overtime-form";
 import { LimitCard } from "./limit-card";
 
-export const metadata: Metadata = { title: "Dashboard Saya — Rekapin" };
+export const metadata: Metadata = { title: "Dashboard Saya | Rekapin" };
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -116,7 +116,7 @@ export default async function DashboardPage({
                         ))}
                       </td>
                       <td className="py-3 pr-4"><StatusBadge status={r.status} /></td>
-                      <td className="py-3 text-muted">{r.rejectNote ?? "—"}</td>
+                      <td className="py-3 text-muted">{r.rejectNote ?? "-"}</td>
                     </tr>
                   ))}
                 </tbody>

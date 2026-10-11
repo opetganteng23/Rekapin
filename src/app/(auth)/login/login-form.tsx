@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Alert, Button, Field } from "@/components/ui";
+import { useToast } from "@/components/toast";
 
 export function LoginForm() {
   const router = useRouter();
+  const toast = useToast();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -26,6 +28,7 @@ export function LoginForm() {
       setLoading(false);
       return;
     }
+    toast.success("Berhasil masuk", "Selamat datang kembali.");
     router.replace("/dashboard");
     router.refresh();
   }

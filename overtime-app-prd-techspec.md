@@ -1,9 +1,9 @@
-# Rekapin — PRD & Technical Specification
+# Rekapin - PRD & Technical Specification
 ### (Overtime Submission & Approval App)
 
 ## 1. Background & Problem Statement
 
-Proses pengajuan lembur saat ini dilakukan secara manual: karyawan harus mengingat jam mulai-selesai lembur, mengumpulkan evidence (foto/dokumen) secara terpisah, lalu merekapnya manual saat diminta — biasanya mendekati deadline. Hal ini menyebabkan:
+Proses pengajuan lembur saat ini dilakukan secara manual: karyawan harus mengingat jam mulai-selesai lembur, mengumpulkan evidence (foto/dokumen) secara terpisah, lalu merekapnya manual saat diminta - biasanya mendekati deadline. Hal ini menyebabkan:
 
 - Karyawan sering telat submit karena proses pengumpulan bukti yang merepotkan
 - Rekap manual rawan human error dan data tidak akurat
@@ -17,7 +17,7 @@ Proses pengajuan lembur saat ini dilakukan secara manual: karyawan harus menging
 - Menyediakan mekanisme approval oleh atasan
 - Menyediakan rekap otomatis yang bisa diexport ke Excel
 
-## 3. Non-Goals (Out of Scope — MVP)
+## 3. Non-Goals (Out of Scope - MVP)
 
 - Integrasi langsung dengan sistem payroll
 - Notifikasi/reminder otomatis (phase 2)
@@ -55,7 +55,7 @@ Proses pengajuan lembur saat ini dilakukan secara manual: karyawan harus menging
 - FR-2: Password disimpan dalam bentuk hash (bcrypt), tidak pernah plaintext
 - FR-2a: *(Phase 2)* Login via Google OAuth 2.0 sebagai opsi tambahan
 - FR-2b: Registrasi mandiri ("Daftar sebagai karyawan") selalu membuat user dengan role `employee`
-- FR-2c: "Lupa kata sandi" — user meminta link reset via email (token sekali pakai, kedaluwarsa 1 jam), lalu mengisi password baru
+- FR-2c: "Lupa kata sandi" - user meminta link reset via email (token sekali pakai, kedaluwarsa 1 jam), lalu mengisi password baru
 - FR-2d: Navigasi ditampilkan sesuai role: employee → Dashboard Saya; approver → + Persetujuan; admin → + Pengguna & Pengaturan. Akses ke halaman/endpoint tetap divalidasi di server, bukan hanya disembunyikan di UI
 - FR-2e: Halaman Profil: user dapat mengubah nama, avatar, dan password (wajib password lama)
 
@@ -77,7 +77,7 @@ Proses pengajuan lembur saat ini dilakukan secara manual: karyawan harus menging
 ### 6.4 Rekap & Export
 - FR-12: User dapat filter rekap lembur berdasarkan rentang tanggal (date range picker di dashboard employee maupun halaman Persetujuan approver; tombol Export memakai rentang yang sama)
 - FR-13: Sistem dapat generate file Excel (.xlsx) dari hasil filter secara manual (tombol "Export")
-- FR-14: Sistem dapat auto-generate rekap Excel secara periodik — frekuensi dapat diatur **mingguan atau bulanan** (configurable)
+- FR-14: Sistem dapat auto-generate rekap Excel secara periodik - frekuensi dapat diatur **mingguan atau bulanan** (configurable)
 - FR-15: File Excel memuat kolom: Nama, Tanggal, Jam Mulai, Jam Selesai, Total Jam, Status, Catatan Approval
 - FR-16: Hasil rekap (manual maupun auto-generate) dapat **didownload langsung** dari dashboard
 - FR-17: Hasil auto-generate periodik juga **dikirim otomatis via email** ke admin/approver terkait
@@ -151,7 +151,7 @@ Proses pengajuan lembur saat ini dilakukan secara manual: karyawan harus menging
 - **Frontend + Backend**: Next.js full-stack (App Router + API routes dalam satu project, satu repo)
 - **Database**: MongoDB (Atlas untuk hosting)
 - **Auth**: Email + password (NextAuth.js dengan Credentials Provider, password di-hash via `bcrypt`). Google OAuth ditambahkan sebagai provider kedua di Phase 2.
-- **File Storage**: Cloud storage (Cloudinary/Supabase Storage/S3) — URL disimpan di MongoDB, bukan file-nya langsung
+- **File Storage**: Cloud storage (Cloudinary/Supabase Storage/S3) - URL disimpan di MongoDB, bukan file-nya langsung
 - **Excel Export**: library `exceljs` atau `xlsx` (Node.js)
 - **Scheduled Job**: Vercel Cron Jobs (jika deploy di Vercel) atau `node-cron` untuk auto-generate rekap periodik (mingguan/bulanan, configurable)
 - **Email Delivery**: service email (mis. Resend/Nodemailer+SMTP) untuk kirim hasil auto-generate rekap ke admin/approver
@@ -220,12 +220,12 @@ Proses pengajuan lembur saat ini dilakukan secara manual: karyawan harus menging
 |---|---|
 | Role assignment approver | Dikelola oleh role `admin` melalui user management page |
 | Arsitektur backend | Full-stack Next.js (frontend + backend satu project) |
-| Export Excel | Mendukung keduanya — auto-generate periodik (cron) & tombol manual on-demand |
+| Export Excel | Mendukung keduanya - auto-generate periodik (cron) & tombol manual on-demand |
 | Limit kuota lembur | Di-set sendiri oleh masing-masing employee, sifatnya warning bukan blocking |
-| Frekuensi auto-generate | **Global, default bulanan** — jalan tanggal 1 jam 06:00 WIB, cakup periode bulan sebelumnya penuh. Opsi ubah ke mingguan tersedia sebagai setting admin (bukan per-user), untuk MVP cukup satu setting global |
-| Distribusi hasil auto-generate | Dua-duanya — tersedia untuk didownload dari dashboard **dan** dikirim otomatis via email |
+| Frekuensi auto-generate | **Global, default bulanan** - jalan tanggal 1 jam 06:00 WIB, cakup periode bulan sebelumnya penuh. Opsi ubah ke mingguan tersedia sebagai setting admin (bukan per-user), untuk MVP cukup satu setting global |
+| Distribusi hasil auto-generate | Dua-duanya - tersedia untuk didownload dari dashboard **dan** dikirim otomatis via email |
 | Metode autentikasi | Email + password (bcrypt hash) untuk MVP. Google OAuth jadi provider tambahan di Phase 2 |
-| Admin pertama (seeding) | Akun `rizkyfadhillahx@gmail.com` di-seed sebagai admin pertama via env variable `INITIAL_ADMIN_EMAIL` + script seed (password diset langsung saat seeding, **bukan** disimpan plaintext di dokumen ini — lihat §9a) |
+| Admin pertama (seeding) | Akun `rizkyfadhillahx@gmail.com` di-seed sebagai admin pertama via env variable `INITIAL_ADMIN_EMAIL` + script seed (password diset langsung saat seeding, **bukan** disimpan plaintext di dokumen ini - lihat §9a) |
 | Nama aplikasi | **Rekapin** |
 | Tema & font | Cloud White (`#F5F7FA` latar, kartu putih) dan **Poppins** wajib di seluruh UI; menggantikan tema krem + Source Serif 4 di mockup lama (lihat §8.4) |
 | Batas upload | 4 MB per file (bukan 10 MB), karena body Vercel Function dibatasi 4,5 MB. Foto dikompres di browser. Perlu client upload langsung ke Blob jika butuh lebih besar |
@@ -234,7 +234,7 @@ Proses pengajuan lembur saat ini dilakukan secara manual: karyawan harus menging
 | Landing page & CMS | Landing page di `/` sepenuhnya dikelola admin lewat Pengaturan → Landing Page (teks, fitur, langkah, peran, CTA, footer, running text, slide hero). Disimpan di koleksi `siteContent` (singleton) dan di-cache dengan tag `site-content`; simpan = langsung ter-invalidasi |
 | Gambar slide | Dikompres di browser (maks 1600px, ≤700 KB), dikirim sebagai base64, disimpan di koleksi `siteImages`, disajikan lewat `/api/site/image/:id` (di-decode ke biner, cache immutable). Maks 8 slide. Hanya JPG/PNG/WebP (SVG ditolak); tanda tangan file diverifikasi di server |
 | Logo & favicon | Logo AILO. Ikon (dipotong dari logo, tanpa wordmark) untuk favicon/navbar/auth/marquee; logo penuh untuk footer |
-| Hapus akses user | Soft-deactivate (`isActive`), bukan hard delete — riwayat lembur tetap terjaga |
+| Hapus akses user | Soft-deactivate (`isActive`), bukan hard delete - riwayat lembur tetap terjaga |
 | Undang pengguna | Admin input nama/email/role → email link set-password; registrasi mandiri tetap ada dan selalu `employee` |
 | Lupa password | Reset via email, token sekali pakai 1 jam |
 | Visibilitas menu | Menu disesuaikan role di UI, enforcement tetap di server |
@@ -248,7 +248,7 @@ Password untuk akun admin pertama sebaiknya **tidak ditulis di dokumen/spec ini 
 
 ## 10. Open Questions
 
-Tidak ada open question tersisa — seluruh keputusan arsitektur & scope MVP sudah final (lihat §9 Decisions Log). Siap lanjut ke scaffolding project.
+Tidak ada open question tersisa - seluruh keputusan arsitektur & scope MVP sudah final (lihat §9 Decisions Log). Siap lanjut ke scaffolding project.
 
 ## 11. Future Enhancements (Phase 2)
 

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Alert, Button, Card, Field } from "@/components/ui";
+import { useToast } from "@/components/toast";
 
 interface Evidence {
   name: string;
@@ -41,6 +42,7 @@ async function compress(file: File): Promise<File> {
 
 export function OvertimeForm({ today }: { today: string }) {
   const router = useRouter();
+  const toast = useToast();
   const fileInput = useRef<HTMLInputElement>(null);
   const [date, setDate] = useState(today);
   const [start, setStart] = useState("17:00");
@@ -49,7 +51,6 @@ export function OvertimeForm({ today }: { today: string }) {
   const [uploading, setUploading] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Pulihkan jam terakhir yang dipakai. Harus di effect (localStorage tidak ada saat SSR);
@@ -95,7 +96,6 @@ export function OvertimeForm({ today }: { today: string }) {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    setSuccess("");
     if (!durationOk) return setError("Jam selesai harus setelah jam mulai");
     if (files.length === 0) return setError("Lampirkan minimal 1 bukti");
     setLoading(true);
@@ -111,7 +111,7 @@ export function OvertimeForm({ today }: { today: string }) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ start, finish }));
     } catch {}
     setFiles([]);
-    setSuccess("Pengajuan terkirim dan menunggu persetujuan.");
+    toast.success("Pengajuan lembur terkirim", "Menunggu persetujuan atasan.");
     router.refresh();
   }
 
@@ -132,7 +132,7 @@ export function OvertimeForm({ today }: { today: string }) {
         <div className="flex items-center justify-between rounded-input bg-bg px-4 py-3">
           <span className="text-sm text-muted">Total durasi</span>
           <span className={`text-lg font-semibold ${durationOk ? "text-text" : "text-danger"}`}>
-            {durationOk ? fmt(diff) : "—"}
+            {durationOk ? fmt(diff) : "-"}
           </span>
         </div>
 
@@ -150,7 +150,7 @@ export function OvertimeForm({ today }: { today: string }) {
                 pilih file
               </button>
             </p>
-            <p className="text-xs text-muted">JPG, PNG, atau PDF — maks 4MB (foto dikompres otomatis)</p>
+            <p className="text-xs text-muted">JPG, PNG, atau PDF, maks 4MB (foto dikompres otomatis)</p>
             <input
               ref={fileInput}
               type="file"
@@ -181,7 +181,6 @@ export function OvertimeForm({ today }: { today: string }) {
         </div>
 
         {error && <Alert tone="error">{error}</Alert>}
-        {success && <Alert tone="success">{success}</Alert>}
         <Button type="submit" loading={loading} disabled={uploading || !durationOk}>
           Kirim Pengajuan
         </Button>

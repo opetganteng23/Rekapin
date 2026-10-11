@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Alert, Button, Field } from "@/components/ui";
+import { useToast } from "@/components/toast";
 
 export function ForgotForm() {
+  const toast = useToast();
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,7 +21,10 @@ export function ForgotForm() {
       body: JSON.stringify({ email: String(new FormData(e.currentTarget).get("email")).trim() }),
     });
     setLoading(false);
-    if (res.ok) setSent(true);
+    if (res.ok) {
+      toast.info("Permintaan diterima", "Cek email Anda untuk link reset.");
+      setSent(true);
+    }
     else setError("Email tidak valid");
   }
 

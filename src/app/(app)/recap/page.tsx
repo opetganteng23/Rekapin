@@ -13,7 +13,7 @@ import {
 import { fetchRows, summarize } from "@/lib/recap";
 import { requireUser } from "@/lib/session";
 
-export const metadata: Metadata = { title: "Rekap Lembur — Rekapin" };
+export const metadata: Metadata = { title: "Rekap Lembur | Rekapin" };
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const DAY = 86_400_000;
@@ -215,7 +215,7 @@ export default async function RecapPage({
                       <td className="py-2 pr-3 whitespace-nowrap">{fmtDate(r.startTime)}</td>
                       <td className="py-2 pr-3 whitespace-nowrap">{fmtTime(r.startTime)}–{fmtTime(r.finishTime)}</td>
                       <td className="py-2 pr-3 text-right whitespace-nowrap">{fmtDuration(r.totalHours)}</td>
-                      <td className="py-2">{r.approvedByName ?? "—"}</td>
+                      <td className="py-2">{r.approvedByName ?? "-"}</td>
                     </tr>
                   ))}
                 </tbody>

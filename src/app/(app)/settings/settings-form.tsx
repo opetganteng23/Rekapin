@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Alert, Button, Card, cx } from "@/components/ui";
+import { useToast } from "@/components/toast";
 
 interface Initial {
   recapFrequency: "monthly" | "weekly";
@@ -16,6 +17,7 @@ const selectCls = "h-11 w-full rounded-input border border-border bg-surface px-
 
 export function SettingsForm({ initial, nextText, lastText }: { initial: Initial; nextText: string; lastText: string }) {
   const router = useRouter();
+  const toast = useToast();
   const [s, setS] = useState(initial);
   const [msg, setMsg] = useState<{ tone: "error" | "success"; text: string } | null>(null);
   const [saving, setSaving] = useState(false);
@@ -32,7 +34,7 @@ export function SettingsForm({ initial, nextText, lastText }: { initial: Initial
     });
     setSaving(false);
     if (!res.ok) return setMsg({ tone: "error", text: (await res.json().catch(() => null))?.error ?? "Gagal menyimpan" });
-    setMsg({ tone: "success", text: "Pengaturan disimpan." });
+    toast.success("Pengaturan jadwal rekap disimpan");
     router.refresh();
   }
 
@@ -43,20 +45,15 @@ export function SettingsForm({ initial, nextText, lastText }: { initial: Initial
     const data = await res.json().catch(() => null);
     setRunning(false);
     if (!res.ok) return setMsg({ tone: "error", text: data?.error ?? "Gagal menjalankan rekap" });
-    setMsg({
-      tone: "success",
-      text:
-        data.status === "exists"
-          ? "Rekap untuk periode ini sudah pernah dibuat."
-          : `Rekap dibuat (${data.rowCount} pengajuan), dikirim ke ${data.emailed} penerima.`,
-    });
+    if (data.status === "exists") toast.info("Rekap periode ini sudah pernah dibuat");
+    else toast.success("Rekap berhasil dibuat", `${data.rowCount} pengajuan, dikirim ke ${data.emailed} penerima.`);
     router.refresh();
   }
 
   return (
     <Card className="mx-auto w-full max-w-2xl">
       <h2 className="text-lg font-semibold">Jadwal Rekap Otomatis</h2>
-      <p className="text-sm text-muted">Pengaturan global — berlaku untuk seluruh perusahaan</p>
+      <p className="text-sm text-muted">Pengaturan global, berlaku untuk seluruh perusahaan</p>
       <form onSubmit={save} className="mt-5 flex flex-col gap-5">
         <fieldset>
           <legend className="mb-2 text-xs font-medium">Frekuensi</legend>

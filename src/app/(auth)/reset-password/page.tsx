@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ResetForm } from "./reset-form";
 
-export const metadata: Metadata = { title: "Atur kata sandi — Rekapin" };
+export const metadata: Metadata = { title: "Atur kata sandi | Rekapin" };
 
 export default function ResetPasswordPage() {
   return (

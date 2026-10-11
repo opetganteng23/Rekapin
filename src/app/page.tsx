@@ -6,7 +6,7 @@ import { getSiteContent } from "@/lib/site";
 export async function generateMetadata(): Promise<Metadata> {
   const c = await getSiteContent();
   return {
-    title: `${c.brand.name} — ${c.hero.badge || "Rekap lembur tanpa ribet"}`,
+    title: `${c.brand.name} | ${c.hero.badge || "Rekap lembur tanpa ribet"}`,
     description: c.hero.subtitle,
   };
 }

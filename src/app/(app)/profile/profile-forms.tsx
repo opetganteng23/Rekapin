@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Alert, Button, Card, Field } from "@/components/ui";
+import { useToast } from "@/components/toast";
 
 type Msg = { tone: "error" | "success"; text: string } | null;
 
@@ -17,6 +18,7 @@ async function patchMe(body: object) {
 
 export function ProfileForms({ name }: { name: string }) {
   const router = useRouter();
+  const toast = useToast();
   const [nameMsg, setNameMsg] = useState<Msg>(null);
   const [pwMsg, setPwMsg] = useState<Msg>(null);
   const [loading, setLoading] = useState<"name" | "pw" | null>(null);
@@ -26,8 +28,11 @@ export function ProfileForms({ name }: { name: string }) {
     setLoading("name");
     const r = await patchMe({ name: String(new FormData(e.currentTarget).get("name")) });
     setLoading(null);
-    setNameMsg(r.ok ? { tone: "success", text: "Nama diperbarui." } : { tone: "error", text: r.error });
-    if (r.ok) router.refresh();
+    if (r.ok) {
+      toast.success("Nama berhasil diperbarui");
+      router.refresh();
+    }
+    setNameMsg(r.ok ? null : { tone: "error", text: r.error });
   }
 
   async function savePassword(e: React.FormEvent<HTMLFormElement>) {
@@ -41,7 +46,8 @@ export function ProfileForms({ name }: { name: string }) {
     const r = await patchMe({ currentPassword: f.get("currentPassword"), newPassword: f.get("newPassword") });
     setLoading(null);
     if (r.ok) form.reset();
-    setPwMsg(r.ok ? { tone: "success", text: "Kata sandi diganti." } : { tone: "error", text: r.error });
+    if (r.ok) toast.success("Kata sandi berhasil diganti");
+    setPwMsg(r.ok ? null : { tone: "error", text: r.error });
   }
 
   return (

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Alert, Button, Card } from "@/components/ui";
+import { useToast } from "@/components/toast";
 import { ICON_KEYS, type IconKey, type SiteContent } from "@/lib/site-shared";
 
 // ---------- Kompres gambar → base64 (data URL) ----------
@@ -141,6 +142,7 @@ const ICON_LABEL: Record<IconKey, string> = {
 // ---------- Editor ----------
 
 export function SiteEditor({ initial }: { initial: SiteContent }) {
+  const toast = useToast();
   const [c, setC] = useState<SiteContent>(initial);
   const [dirty, setDirty] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -198,7 +200,7 @@ export function SiteEditor({ initial }: { initial: SiteContent }) {
     setSaving(false);
     if (!res.ok) return setMsg({ tone: "error", text: data?.error ?? "Gagal menyimpan" });
     setDirty(false);
-    setMsg({ tone: "success", text: "Tersimpan. Landing page sudah diperbarui." });
+    toast.success("Landing page disimpan", "Perubahan sudah tampil di halaman depan.");
   }
 
   return (
@@ -212,9 +214,9 @@ export function SiteEditor({ initial }: { initial: SiteContent }) {
         <Text label="Nama brand" value={c.brand.name} max={40} onChange={(v) => update((d) => ({ ...d, brand: { name: v } }))} />
         <Text label="Badge kecil di atas judul" value={c.hero.badge} max={80} onChange={(v) => update((d) => ({ ...d, hero: { ...d.hero, badge: v } }))} />
         <div className="grid gap-4 sm:grid-cols-3">
-          <Text label="Judul — awal" value={c.hero.titleBefore} max={120} onChange={(v) => update((d) => ({ ...d, hero: { ...d.hero, titleBefore: v } }))} />
-          <Text label="Judul — kata berwarna" value={c.hero.titleHighlight} max={60} onChange={(v) => update((d) => ({ ...d, hero: { ...d.hero, titleHighlight: v } }))} />
-          <Text label="Judul — akhir" value={c.hero.titleAfter} max={120} onChange={(v) => update((d) => ({ ...d, hero: { ...d.hero, titleAfter: v } }))} />
+          <Text label="Judul (awal)" value={c.hero.titleBefore} max={120} onChange={(v) => update((d) => ({ ...d, hero: { ...d.hero, titleBefore: v } }))} />
+          <Text label="Judul (kata berwarna)" value={c.hero.titleHighlight} max={60} onChange={(v) => update((d) => ({ ...d, hero: { ...d.hero, titleHighlight: v } }))} />
+          <Text label="Judul (akhir)" value={c.hero.titleAfter} max={120} onChange={(v) => update((d) => ({ ...d, hero: { ...d.hero, titleAfter: v } }))} />
         </div>
         <Text label="Sub-judul" multiline value={c.hero.subtitle} max={400} onChange={(v) => update((d) => ({ ...d, hero: { ...d.hero, subtitle: v } }))} />
         <div className="grid gap-4 sm:grid-cols-2">
@@ -291,7 +293,7 @@ export function SiteEditor({ initial }: { initial: SiteContent }) {
         {c.features.items.map((f, i) => (
           <div key={i} className="flex flex-col gap-3 rounded-input border border-border p-3">
             <div className="flex flex-wrap items-end gap-3">
-              <div className="min-w-0 flex-1"><Text label={`Fitur ${i + 1} — judul`} value={f.title} max={60} onChange={(v) => update((d) => { d.features.items[i].title = v; return d; })} /></div>
+              <div className="min-w-0 flex-1"><Text label={`Fitur ${i + 1}: judul`} value={f.title} max={60} onChange={(v) => update((d) => { d.features.items[i].title = v; return d; })} /></div>
               <label className="flex flex-col gap-1.5 text-xs font-medium">
                 Ikon
                 <select value={f.icon} onChange={(e) => update((d) => { d.features.items[i].icon = e.target.value as IconKey; return d; })} className={`${inputCls} h-10 w-auto`}>
@@ -317,7 +319,7 @@ export function SiteEditor({ initial }: { initial: SiteContent }) {
         {c.steps.items.map((s, i) => (
           <div key={i} className="flex flex-col gap-3 rounded-input border border-border p-3">
             <div className="flex items-end gap-3">
-              <div className="min-w-0 flex-1"><Text label={`Langkah ${i + 1} — judul`} value={s.title} max={60} onChange={(v) => update((d) => { d.steps.items[i].title = v; return d; })} /></div>
+              <div className="min-w-0 flex-1"><Text label={`Langkah ${i + 1}: judul`} value={s.title} max={60} onChange={(v) => update((d) => { d.steps.items[i].title = v; return d; })} /></div>
               <RowTools i={i} len={c.steps.items.length} onMove={(dir) => update((d) => ({ ...d, steps: { ...d.steps, items: move(d.steps.items, i, dir) } }))} onRemove={() => update((d) => ({ ...d, steps: { ...d.steps, items: d.steps.items.filter((_, k) => k !== i) } }))} />
             </div>
             <Text label="Deskripsi" multiline value={s.text} max={240} onChange={(v) => update((d) => { d.steps.items[i].text = v; return d; })} />
@@ -337,7 +339,7 @@ export function SiteEditor({ initial }: { initial: SiteContent }) {
         {c.roles.items.map((r, i) => (
           <div key={i} className="flex flex-col gap-3 rounded-input border border-border p-3">
             <div className="flex items-end gap-3">
-              <div className="min-w-0 flex-1"><Text label={`Peran ${i + 1} — nama`} value={r.name} max={40} onChange={(v) => update((d) => { d.roles.items[i].name = v; return d; })} /></div>
+              <div className="min-w-0 flex-1"><Text label={`Peran ${i + 1}: nama`} value={r.name} max={40} onChange={(v) => update((d) => { d.roles.items[i].name = v; return d; })} /></div>
               <RowTools i={i} len={c.roles.items.length} onMove={(dir) => update((d) => ({ ...d, roles: { ...d.roles, items: move(d.roles.items, i, dir) } }))} onRemove={() => update((d) => ({ ...d, roles: { ...d.roles, items: d.roles.items.filter((_, k) => k !== i) } }))} />
             </div>
             <StringList label="Poin" items={r.items} max={8} onChange={(v) => update((d) => { d.roles.items[i].items = v; return d; })} />
