@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/* Cloud White theme — lihat §8.4 overtime-app-prd-techspec.md */
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --border: #e4e8ee;
+  --text: #1f2937;
+  --text-muted: #6b7280;
+  --primary: #4f7cac;
+  --primary-hover: #416a95;
+  --success: #3e9b6e;
+  --warning: #d99a2b;
+  --danger: #d4574e;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-poppins), system-ui, sans-serif;
+  --radius-card: 12px;
+  --radius-input: 8px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
