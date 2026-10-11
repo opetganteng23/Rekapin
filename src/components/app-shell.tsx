@@ -6,7 +6,7 @@ import { SignOutButton } from "./sign-out-button";
 const roleLabel = { employee: "Karyawan", approver: "Approver", admin: "Admin" } as const;
 
 const NAV: { href: string; label: string; roles: string[] }[] = [
-  { href: "/dashboard", label: "Dashboard Saya", roles: ["employee", "approver", "admin"] },
+  { href: "/dashboard", label: "Dashboard Saya", roles: ["employee", "approver"] },
   { href: "/approvals", label: "Persetujuan", roles: ["approver"] },
   { href: "/users", label: "Pengguna", roles: ["admin"] },
   { href: "/settings", label: "Pengaturan", roles: ["admin"] },
@@ -16,13 +16,14 @@ export async function AppShell({ children }: { children: ReactNode }) {
   const user = await requireUser();
   const initials = (user.name ?? "?").split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
   const links = NAV.filter((n) => n.roles.includes(user.role));
+  const home = user.role === "admin" ? "/users" : "/dashboard";
 
   return (
     <div className="flex flex-1 flex-col">
       <header className="sticky top-0 z-10 border-b border-border bg-surface/95 backdrop-blur">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-8">
           <div className="flex items-center gap-6">
-            <Link href="/dashboard" className="flex items-center gap-2.5">
+            <Link href={home} className="flex items-center gap-2.5">
               <span className="flex size-8 items-center justify-center rounded-input bg-primary text-sm font-semibold text-white">R</span>
               <span className="text-lg font-semibold">Rekapin</span>
             </Link>

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { users } from "@/lib/db";
 import { requireUser } from "@/lib/session";
-import { Card } from "@/components/ui";
 import { UsersManager, type UserRow } from "./users-manager";
 
 export const metadata: Metadata = { title: "Pengguna — Rekapin" };
+
+const joinedFmt = new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Jakarta" });
 
 export default async function UsersPage() {
   const me = await requireUser(["admin"]);
@@ -19,12 +20,8 @@ export default async function UsersPage() {
     email: u.email,
     role: u.role,
     isActive: u.isActive,
-    joined: new Intl.DateTimeFormat("id-ID", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Jakarta" }).format(u.createdAt),
+    joined: joinedFmt.format(u.createdAt),
   }));
 
-  return (
-    <Card>
-      <UsersManager rows={rows} meId={me.id} />
-    </Card>
-  );
+  return <UsersManager rows={rows} meId={me.id} />;
 }

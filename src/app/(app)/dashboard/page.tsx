@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { ObjectId } from "mongodb";
 import { overtimeRecords, users } from "@/lib/db";
 import { fmtDate, fmtDuration, fmtTime, monthRangeWib, todayWib, toWibDate } from "@/lib/overtime";
@@ -17,6 +18,8 @@ export default async function DashboardPage({
   searchParams: Promise<{ from?: string; to?: string }>;
 }) {
   const user = await requireUser();
+  // Admin tidak mengajukan lembur; beranda admin adalah manajemen pengguna.
+  if (user.role === "admin") redirect("/users");
   const sp = await searchParams;
   const userId = new ObjectId(user.id);
   const col = await overtimeRecords();
