@@ -10,7 +10,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           href="/"
           className="mb-4 inline-flex h-10 items-center gap-2 rounded-input px-3 text-sm font-medium text-muted transition-colors hover:bg-surface hover:text-text"
         >
-          <span aria-hidden>←</span> Kembali ke beranda
+          Kembali ke beranda
         </Link>
         <div className="mb-6 text-center">
           <Link href="/" aria-label="Beranda" className="mx-auto mb-3 block w-fit"><LogoMark size={64} /></Link>
