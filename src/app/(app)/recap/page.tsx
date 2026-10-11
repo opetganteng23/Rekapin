@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ObjectId, type Filter } from "mongodb";
 import { LogoMark } from "@/components/logo";
+import { ExportButton } from "@/components/export-button";
+import { NavForm } from "@/components/nav-form";
 import { PrintButton } from "@/components/print-button";
 import { Card } from "@/components/ui";
 import type { OvertimeDoc } from "@/lib/db";
@@ -83,7 +85,7 @@ export default async function RecapPage({
         </div>
 
         <Card className="!p-4">
-          <form method="get" className="flex flex-wrap items-end gap-3">
+          <NavForm className="flex flex-wrap items-end gap-3">
             <div className="flex items-end gap-1">
               <Link
                 href={`/recap?month=${mb.prev}`}
@@ -124,17 +126,12 @@ export default async function RecapPage({
             {rangeMode && (
               <Link href="/recap" className="flex h-10 items-center px-2 text-sm text-muted hover:text-text">Reset ke bulan ini</Link>
             )}
-          </form>
+          </NavForm>
           <p className="mt-2 text-xs text-muted">Jika rentang tanggal diisi, rentang dipakai menggantikan pilihan bulan.</p>
         </Card>
 
         <div className="flex flex-wrap gap-2">
-          <a
-            href={exportHref}
-            className="inline-flex h-11 items-center gap-2 rounded-input bg-primary px-5 text-sm font-medium text-white hover:bg-primary-hover"
-          >
-            Export Excel (.xlsx)
-          </a>
+          <ExportButton href={exportHref} className="h-11" />
           <PrintButton />
         </div>
       </div>

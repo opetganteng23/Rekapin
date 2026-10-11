@@ -5,6 +5,8 @@ import { ObjectId } from "mongodb";
 import { overtimeRecords, users } from "@/lib/db";
 import { fmtDate, fmtDuration, fmtTime, monthRangeWib, todayWib, toWibDate } from "@/lib/overtime";
 import { requireUser } from "@/lib/session";
+import { ExportButton } from "@/components/export-button";
+import { NavForm } from "@/components/nav-form";
 import { Card, StatusBadge } from "@/components/ui";
 import { OvertimeForm } from "./overtime-form";
 import { LimitCard } from "./limit-card";
@@ -57,7 +59,7 @@ export default async function DashboardPage({
       <Card className="min-w-0">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <h2 className="text-lg font-semibold">Riwayat Pengajuan</h2>
-          <form className="flex flex-wrap items-end gap-2" method="get">
+          <NavForm className="flex flex-wrap items-end gap-2">
             <label className="flex flex-col gap-1 text-xs font-medium">
               Dari
               <input type="date" name="from" defaultValue={from} className="h-10 rounded-input border border-border bg-surface px-2 text-sm" />
@@ -67,19 +69,18 @@ export default async function DashboardPage({
               <input type="date" name="to" defaultValue={to} className="h-10 rounded-input border border-border bg-surface px-2 text-sm" />
             </label>
             <button className="h-10 rounded-input border border-border px-4 text-sm font-medium hover:bg-bg">Terapkan</button>
-            <a
+            <ExportButton
               href={`/api/overtime/export${from || to ? `?${new URLSearchParams({ ...(from && { from }), ...(to && { to }) })}` : ""}`}
-              className="flex h-10 items-center rounded-input bg-primary px-4 text-sm font-medium text-white hover:bg-primary-hover"
-            >
-              Export .xlsx
-            </a>
+              label="Export .xlsx"
+              className="h-10 px-4"
+            />
             <Link href="/recap" className="flex h-10 items-center rounded-input border border-border px-4 text-sm font-medium hover:bg-bg">
               Rekap bulanan &amp; cetak
             </Link>
             {(from || to) && (
               <a href="/dashboard" className="flex h-10 items-center px-2 text-sm text-muted hover:text-text">Reset</a>
             )}
-          </form>
+          </NavForm>
         </div>
 
         {records.length === 0 ? (

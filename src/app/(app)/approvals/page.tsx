@@ -3,6 +3,8 @@ import { overtimeRecords } from "@/lib/db";
 import { fmtDate, fmtDuration, fmtTime, monthRangeWib } from "@/lib/overtime";
 import { recaps } from "@/lib/recap";
 import { requireUser } from "@/lib/session";
+import { ExportButton } from "@/components/export-button";
+import { NavForm } from "@/components/nav-form";
 import { Card } from "@/components/ui";
 import { ApprovalsTable, type PendingRow } from "./approvals-table";
 
@@ -79,7 +81,7 @@ export default async function ApprovalsPage({
           <h1 className="text-2xl font-semibold">Pengajuan Menunggu Persetujuan</h1>
           <p className="text-sm text-muted">{pendingCount} pengajuan perlu direview</p>
         </div>
-        <form method="get" className="flex flex-wrap items-end gap-2">
+        <NavForm className="flex flex-wrap items-end gap-2">
           <label className="flex flex-col gap-1 text-xs font-medium">
             Dari
             <input type="date" name="from" defaultValue={from} className="h-10 rounded-input border border-border bg-surface px-2 text-sm" />
@@ -89,13 +91,12 @@ export default async function ApprovalsPage({
             <input type="date" name="to" defaultValue={to} className="h-10 rounded-input border border-border bg-surface px-2 text-sm" />
           </label>
           <button className="h-10 rounded-input border border-border px-3 text-sm font-medium hover:bg-bg">Terapkan</button>
-          <a
+          <ExportButton
             href={`/api/overtime/export${exportQuery ? `?${exportQuery}` : ""}`}
-            className="flex h-10 items-center rounded-input bg-primary px-4 text-sm font-medium text-white hover:bg-primary-hover"
-          >
-            Export Rekap .xlsx
-          </a>
-        </form>
+            label="Export Rekap .xlsx"
+            className="h-10 px-4"
+          />
+        </NavForm>
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
