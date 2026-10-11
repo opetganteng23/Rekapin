@@ -22,6 +22,8 @@ export interface RecapRow {
   totalHours: number;
   status: OvertimeDoc["status"];
   rejectNote?: string | null;
+  approvedAt?: Date | null;
+  approvedByName?: string | null;
 }
 
 export interface RecapDoc {
@@ -50,9 +52,102 @@ export async function fetchRows(match: Filter<OvertimeDoc>): Promise<RecapRow[]>
       { $sort: { startTime: 1 } },
       { $lookup: { from: "users", localField: "userId", foreignField: "_id", as: "u" } },
       { $unwind: "$u" },
-      { $project: { _id: 0, name: "$u.name", startTime: 1, finishTime: 1, totalHours: 1, status: 1, rejectNote: 1 } },
+      { $lookup: { from: "users", localField: "approvedBy", foreignField: "_id", as: "ap" } },
+      {
+        $project: {
+          _id: 0,
+          name: "$u.name",
+          startTime: 1,
+          finishTime: 1,
+          totalHours: 1,
+          status: 1,
+          rejectNote: 1,
+          approvedAt: 1,
+          approvedByName: { $arrayElemAt: ["$ap.name", 0] },
+        },
+      },
     ])
     .toArray();
+}
+
+export interface EmployeeSummary {
+  name: string;
+  count: number;
+  hours: number;
+}
+
+/** Total pengajuan & jam per karyawan, urut nama. */
+export function summarize(rows: RecapRow[]): EmployeeSummary[] {
+  const map = new Map<string, EmployeeSummary>();
+  for (const r of rows) {
+    const s = map.get(r.name) ?? { name: r.name, count: 0, hours: 0 };
+    s.count += 1;
+    s.hours += r.totalHours;
+    map.set(r.name, s);
+  }
+  return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, "id"));
+}
+
+/** Laporan rekap lembur yang disetujui: judul + periode, detail, dan ringkasan per karyawan. */
+export async function buildReportWorkbook(
+  rows: RecapRow[],
+  meta: { title: string; periodLabel: string; generatedBy: string },
+): Promise<Buffer> {
+  const wb = new ExcelJS.Workbook();
+  wb.creator = meta.generatedBy;
+  const headFill = { type: "pattern" as const, pattern: "solid" as const, fgColor: { argb: "FFE4E8EE" } };
+
+  const ws = wb.addWorksheet("Rekap Lembur", { pageSetup: { orientation: "landscape", paperSize: 9, fitToPage: true, fitToWidth: 1, fitToHeight: 0 } });
+  ws.mergeCells("A1:I1");
+  ws.getCell("A1").value = meta.title;
+  ws.getCell("A1").font = { bold: true, size: 14 };
+  ws.mergeCells("A2:I2");
+  ws.getCell("A2").value = `Periode: ${meta.periodLabel}`;
+  ws.mergeCells("A3:I3");
+  ws.getCell("A3").value = `Dicetak oleh ${meta.generatedBy} pada ${fmtDate(new Date())}`;
+  ws.getCell("A3").font = { color: { argb: "FF6B7280" }, size: 10 };
+
+  const header = ["No", "Nama", "Tanggal", "Jam Mulai", "Jam Selesai", "Total Jam", "Status", "Disetujui Oleh", "Tanggal Disetujui"];
+  const hr = ws.getRow(5);
+  hr.values = header;
+  hr.font = { bold: true };
+  hr.eachCell((c) => { c.fill = headFill; c.border = { bottom: { style: "thin" } }; });
+  ws.columns = [
+    { key: "no", width: 5 }, { key: "name", width: 26 }, { key: "date", width: 14 }, { key: "start", width: 11 },
+    { key: "finish", width: 12 }, { key: "hours", width: 11, style: { numFmt: "0.00" } }, { key: "status", width: 13 },
+    { key: "by", width: 24 }, { key: "at", width: 17 },
+  ];
+  ws.views = [{ state: "frozen", ySplit: 5 }];
+
+  rows.forEach((r, i) => {
+    ws.addRow([
+      i + 1, r.name, fmtDate(r.startTime), fmtTime(r.startTime), fmtTime(r.finishTime), r.totalHours,
+      STATUS_LABEL[r.status], r.approvedByName ?? "", r.approvedAt ? fmtDate(r.approvedAt) : "",
+    ]);
+  });
+  const total = ws.addRow(["", "TOTAL", "", "", "", rows.reduce((s, r) => s + r.totalHours, 0)]);
+  total.font = { bold: true };
+  total.getCell(6).numFmt = "0.00";
+
+  const sum = wb.addWorksheet("Ringkasan per Karyawan");
+  sum.columns = [{ width: 5 }, { width: 28 }, { width: 18 }, { width: 14 }];
+  sum.mergeCells("A1:D1");
+  sum.getCell("A1").value = `${meta.title} — ${meta.periodLabel}`;
+  sum.getCell("A1").font = { bold: true, size: 13 };
+  const sh = sum.getRow(3);
+  sh.values = ["No", "Nama", "Jumlah Pengajuan", "Total Jam"];
+  sh.font = { bold: true };
+  sh.eachCell((c) => { c.fill = headFill; });
+  const per = summarize(rows);
+  per.forEach((p, i) => {
+    const r = sum.addRow([i + 1, p.name, p.count, p.hours]);
+    r.getCell(4).numFmt = "0.00";
+  });
+  const t = sum.addRow(["", "TOTAL", per.reduce((s, p) => s + p.count, 0), per.reduce((s, p) => s + p.hours, 0)]);
+  t.font = { bold: true };
+  t.getCell(4).numFmt = "0.00";
+
+  return Buffer.from(await wb.xlsx.writeBuffer());
 }
 
 /** Kolom sesuai FR-15. */

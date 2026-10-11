@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ObjectId } from "mongodb";
 import { overtimeRecords, users } from "@/lib/db";
@@ -72,6 +73,9 @@ export default async function DashboardPage({
             >
               Export .xlsx
             </a>
+            <Link href="/recap" className="flex h-10 items-center rounded-input border border-border px-4 text-sm font-medium hover:bg-bg">
+              Rekap bulanan &amp; cetak
+            </Link>
             {(from || to) && (
               <a href="/dashboard" className="flex h-10 items-center px-2 text-sm text-muted hover:text-text">Reset</a>
             )}

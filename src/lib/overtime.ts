@@ -38,3 +38,28 @@ const timeFmt = new Intl.DateTimeFormat("id-ID", {
 });
 export const fmtDate = (d: Date) => dateFmt.format(d);
 export const fmtTime = (d: Date) => timeFmt.format(d).replace(".", ":");
+
+const MONTHS_ID = [
+  "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+  "Juli", "Agustus", "September", "Oktober", "November", "Desember",
+];
+
+export const isYearMonth = (v: string) => /^\d{4}-(0[1-9]|1[0-2])$/.test(v);
+
+/** Batas bulan 'YYYY-MM' menurut WIB: [start, end) + label serta bulan sebelum/sesudahnya. */
+export function monthBounds(ym: string) {
+  const [y, m] = ym.split("-").map(Number);
+  const shift = (d: number) => {
+    const t = new Date(Date.UTC(y, m - 1 + d, 1));
+    return `${t.getUTCFullYear()}-${String(t.getUTCMonth() + 1).padStart(2, "0")}`;
+  };
+  return {
+    start: toWibDate(`${ym}-01`, "00:00"),
+    end: toWibDate(`${shift(1)}-01`, "00:00"),
+    label: `${MONTHS_ID[m - 1]} ${y}`,
+    prev: shift(-1),
+    next: shift(1),
+  };
+}
+
+export const currentYearMonth = (now = new Date()) => todayWib(now).slice(0, 7);

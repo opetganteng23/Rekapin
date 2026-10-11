@@ -9,6 +9,7 @@ const roleLabel = { employee: "Karyawan", approver: "Approver", admin: "Admin" }
 const NAV: { href: string; label: string; roles: string[] }[] = [
   { href: "/dashboard", label: "Dashboard Saya", roles: ["employee", "approver"] },
   { href: "/approvals", label: "Persetujuan", roles: ["approver"] },
+  { href: "/recap", label: "Rekap Lembur", roles: ["employee", "approver", "admin"] },
   { href: "/users", label: "Pengguna", roles: ["admin"] },
   { href: "/settings", label: "Pengaturan", roles: ["admin"] },
 ];
@@ -21,7 +22,7 @@ export async function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="sticky top-0 z-10 border-b border-border bg-surface/95 backdrop-blur">
+      <header className="sticky top-0 z-10 border-b border-border bg-surface/95 backdrop-blur print:hidden">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-8">
           <div className="flex items-center gap-6">
             <Link href={home} className="flex items-center gap-2.5">
@@ -58,7 +59,7 @@ export async function AppShell({ children }: { children: ReactNode }) {
           ))}
         </nav>
       </header>
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-8 sm:py-8">{children}</main>
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-8 sm:py-8 print:max-w-none print:p-0">{children}</main>
     </div>
   );
 }
