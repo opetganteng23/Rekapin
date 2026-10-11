@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import { Suspense } from "react";
 import { RouteProgress } from "@/components/route-progress";
+import { TabCloseGuard } from "@/components/tab-close-guard";
 import { ToastProvider } from "@/components/toast";
 import "./globals.css";
 
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Suspense fallback={null}>
           <RouteProgress />
         </Suspense>
+        <TabCloseGuard />
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>

@@ -7,5 +7,15 @@ declare module "next-auth" {
   }
   interface Session {
     user: { id: string; role: Role } & DefaultSession["user"];
+    /** id unik login ini; dipakai untuk penanda penutupan tab. */
+    sid?: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id?: string;
+    role?: Role;
+    sid?: string;
   }
 }

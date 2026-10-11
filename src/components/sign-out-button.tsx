@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { Modal } from "./modal";
+import { notifyAuthChanged } from "./tab-close-guard";
 import { useToast } from "./toast";
 import { Button } from "./ui";
 
@@ -18,8 +19,9 @@ export function SignOutButton() {
     try {
       // redirect:false agar toast (di root layout) tetap hidup setelah pindah ke halaman login.
       await signOut({ redirect: false });
+      notifyAuthChanged(); // matikan peringatan tutup tab
       toast.success("Anda telah keluar", "Sampai jumpa lagi.");
-      router.replace("/login");
+      router.replace("/"); // kembali ke landing page
       router.refresh();
     } catch {
       setLoading(false);

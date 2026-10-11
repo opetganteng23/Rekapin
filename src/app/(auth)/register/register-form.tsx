@@ -6,6 +6,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Alert, Button, Field } from "@/components/ui";
 import { useToast } from "@/components/toast";
+import { notifyAuthChanged } from "@/components/tab-close-guard";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -35,6 +36,7 @@ export function RegisterForm() {
       return;
     }
     await signIn("credentials", { email, password, redirect: false });
+    notifyAuthChanged();
     toast.success("Akun berhasil dibuat", "Selamat datang di Rekapin.");
     router.replace("/dashboard");
     router.refresh();

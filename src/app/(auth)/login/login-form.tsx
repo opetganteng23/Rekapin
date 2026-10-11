@@ -6,6 +6,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { Alert, Button, Field } from "@/components/ui";
 import { useToast } from "@/components/toast";
+import { notifyAuthChanged } from "@/components/tab-close-guard";
 
 export function LoginForm() {
   const router = useRouter();
@@ -28,6 +29,7 @@ export function LoginForm() {
       setLoading(false);
       return;
     }
+    notifyAuthChanged();
     toast.success("Berhasil masuk", "Selamat datang kembali.");
     router.replace("/dashboard");
     router.refresh();
