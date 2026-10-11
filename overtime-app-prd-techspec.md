@@ -228,6 +228,9 @@ Proses pengajuan lembur saat ini dilakukan secara manual: karyawan harus menging
 | Admin pertama (seeding) | Akun `rizkyfadhillahx@gmail.com` di-seed sebagai admin pertama via env variable `INITIAL_ADMIN_EMAIL` + script seed (password diset langsung saat seeding, **bukan** disimpan plaintext di dokumen ini — lihat §9a) |
 | Nama aplikasi | **Rekapin** |
 | Tema & font | Cloud White (`#F5F7FA` latar, kartu putih) dan **Poppins** wajib di seluruh UI; menggantikan tema krem + Source Serif 4 di mockup lama (lihat §8.4) |
+| Batas upload | 4 MB per file (bukan 10 MB), karena body Vercel Function dibatasi 4,5 MB. Foto dikompres di browser. Perlu client upload langsung ke Blob jika butuh lebih besar |
+| Cron rekap | Vercel Cron berjalan **harian** 06:00 WIB (`0 23 * * *` UTC, kompatibel plan Hobby); endpoint hanya eksekusi bila hari ini cocok dengan jadwal di Settings. Field `recapHour` hanya informasi jadwal; jam eksekusi aktual mengikuti `vercel.json` |
+| Siapa yang approve | Hanya role `approver` (admin tidak), dan tidak boleh memutuskan pengajuan sendiri |
 | Hapus akses user | Soft-deactivate (`isActive`), bukan hard delete — riwayat lembur tetap terjaga |
 | Undang pengguna | Admin input nama/email/role → email link set-password; registrasi mandiri tetap ada dan selalu `employee` |
 | Lupa password | Reset via email, token sekali pakai 1 jam |

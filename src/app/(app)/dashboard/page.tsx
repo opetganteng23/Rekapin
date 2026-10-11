@@ -63,6 +63,12 @@ export default async function DashboardPage({
               <input type="date" name="to" defaultValue={to} className="h-10 rounded-input border border-border bg-surface px-2 text-sm" />
             </label>
             <button className="h-10 rounded-input border border-border px-4 text-sm font-medium hover:bg-bg">Terapkan</button>
+            <a
+              href={`/api/overtime/export${from || to ? `?${new URLSearchParams({ ...(from && { from }), ...(to && { to }) })}` : ""}`}
+              className="flex h-10 items-center rounded-input bg-primary px-4 text-sm font-medium text-white hover:bg-primary-hover"
+            >
+              Export .xlsx
+            </a>
             {(from || to) && (
               <a href="/dashboard" className="flex h-10 items-center px-2 text-sm text-muted hover:text-text">Reset</a>
             )}
